@@ -16,7 +16,7 @@ fn main() -> ExitCode {
     match argv.first().map(String::as_str) {
         Some("describe") => describe::run(),
         Some("schema") => schema::run(),
-        Some("recon") => recon::run(&argv[1..]),
+        Some("recon") => recon::run_cmd(&argv[1..]),
         Some("explain") => explain::run(&argv[1..]),
         Some("--version") => {
             println!("vervet {}", env!("CARGO_PKG_VERSION"));

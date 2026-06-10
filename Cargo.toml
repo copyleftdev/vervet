@@ -5,6 +5,7 @@ members = [
     "crates/vervet-scope",
     "crates/vervet-technique",
     "crates/vervet-techniques",
+    "crates/vervet-engage",
     "crates/vervet-cli",
 ]
 
@@ -29,6 +30,7 @@ vervet-core = { path = "crates/vervet-core" }
 vervet-scope = { path = "crates/vervet-scope" }
 vervet-technique = { path = "crates/vervet-technique" }
 vervet-techniques = { path = "crates/vervet-techniques" }
+vervet-engage = { path = "crates/vervet-engage" }
 
 [profile.release]
 lto = "thin"

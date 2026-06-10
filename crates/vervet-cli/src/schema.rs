@@ -1,15 +1,13 @@
-//! `vervet schema` — the vq1 envelope contract as JSON Schema.
+//! `vervet schema` — the engagement receipt contract as JSON Schema.
 
 use std::process::ExitCode;
 
 use serde_json::json;
 
-/// Emit the vq1 envelope contract, pinned to the protocol version. Consumers
-/// validate against it or generate typed bindings from it.
+/// Emit the receipt contract, pinned to the protocol version. A receipt is a
+/// vq1 evidence envelope bound to a tamper-evident audit chain.
 pub fn run() -> ExitCode {
-    let schema = json!({
-        "$id": "https://vervet.tools/schema/vq1/0.1.0",
-        "title": "vq1 evidence envelope",
+    let envelope = json!({
         "type": "object",
         "required": ["header", "summary", "handles"],
         "properties": {
@@ -34,6 +32,26 @@ pub fn run() -> ExitCode {
                 "description": "map of ev:<hash> to one observation record"
             }
         }
+    });
+    let audit = json!({
+        "type": "array",
+        "description": "tamper-evident chain; audit[n].prev is the blake3 handle of audit[n-1]",
+        "items": {
+            "type": "object",
+            "properties": {
+                "seq": { "type": "integer" },
+                "engagement_id": { "type": "string" },
+                "action": { "type": "string" },
+                "prev": { "type": "string" }
+            }
+        }
+    });
+    let schema = json!({
+        "$id": "https://vervet.tools/schema/vq1-receipt/0.1.0",
+        "title": "vervet engagement receipt",
+        "type": "object",
+        "required": ["envelope", "audit"],
+        "properties": { "envelope": envelope, "audit": audit }
     });
     println!(
         "{}",

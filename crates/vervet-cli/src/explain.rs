@@ -27,7 +27,12 @@ pub fn run(argv: &[String]) -> ExitCode {
         }
     };
 
-    match doc.get("handles").and_then(|h| h.get(handle)) {
+    // Handles live under the receipt's envelope; tolerate a bare envelope too.
+    let handles = doc
+        .get("envelope")
+        .and_then(|e| e.get("handles"))
+        .or_else(|| doc.get("handles"));
+    match handles.and_then(|h| h.get(handle)) {
         Some(record) => {
             println!(
                 "{}",

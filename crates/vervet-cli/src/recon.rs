@@ -1,10 +1,10 @@
-//! `vervet recon` — authorize T1046 through the gate, engage, emit an envelope.
+//! `vervet recon` — authorize T1046 through the gate, engage, emit a receipt.
 
 use std::net::Ipv4Addr;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use vervet_core::envelope::Envelope;
+use vervet_engage::{EngageError, run};
 use vervet_scope::{Gate, Manifest, Request};
 use vervet_technique::find;
 
@@ -12,8 +12,9 @@ use crate::args;
 
 /// `vervet recon --manifest <f> --authority <hex> --target <ipv4> [--ports a,b]`
 ///
-/// A denial prints the typed reason and exits 2; usage/IO errors exit 1.
-pub fn run(argv: &[String]) -> ExitCode {
+/// Emits an audited engagement receipt. A denial prints the typed reason and
+/// exits 2; usage/IO errors exit 1.
+pub fn run_cmd(argv: &[String]) -> ExitCode {
     let (Some(manifest_path), Some(authority), Some(target)) = (
         args::value(argv, "--manifest"),
         args::value(argv, "--authority"),
@@ -46,21 +47,16 @@ pub fn run(argv: &[String]) -> ExitCode {
     };
 
     let request = Request { target, ports };
-    let grant = match gate.authorize(&manifest, technique.meta().id, request, now()) {
-        Ok(g) => g,
-        Err(d) => return deny(&d.to_string()),
-    };
-
-    let evidence = technique.engage(&grant);
-    match Envelope::from_evidence(&evidence) {
-        Ok(env) => {
+    match run(&gate, &manifest, technique, request, now()) {
+        Ok(receipt) => {
             println!(
                 "{}",
-                serde_json::to_string_pretty(&env).expect("envelope serialize")
+                serde_json::to_string_pretty(&receipt).expect("receipt serialize")
             );
             ExitCode::SUCCESS
         }
-        Err(e) => fail(&e.to_string()),
+        Err(EngageError::Denied(d)) => deny(&d.to_string()),
+        Err(EngageError::Assembly(e)) => fail(&e.to_string()),
     }
 }
 

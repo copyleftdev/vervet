@@ -16,7 +16,12 @@ Ed25519-signed scope manifest. Out-of-scope is a hard, typed refusal.
 | `vervet-scope` | authorization spine: signed `Manifest`, IPv4 CIDR scope, the unforgeable `Grant` token, audit chain |
 | `vervet-technique` | the `Technique` trait + `inventory` registry (self-registration) |
 | `vervet-techniques` | the techniques themselves — one self-contained file per ATT&CK id |
+| `vervet-engage` | orchestration: authorize → engage → emit an audited `Receipt` (the one path every technique-firing verb funnels through) |
 | `vervet-cli` | the verb surface: `describe`, `schema`, `recon`, `explain` |
+
+`recon` emits a **Receipt** — a vq1 evidence envelope bound to a tamper-evident
+audit chain. Each `audit[n].prev` is the blake3 handle of `audit[n-1]`, so any
+removed or altered action breaks every later link.
 
 ## Invariants
 

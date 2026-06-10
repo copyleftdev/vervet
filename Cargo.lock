@@ -409,6 +409,7 @@ version = "0.1.0"
 dependencies = [
  "serde_json",
  "vervet-core",
+ "vervet-engage",
  "vervet-scope",
  "vervet-technique",
  "vervet-techniques",
@@ -421,6 +422,19 @@ dependencies = [
  "blake3",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "vervet-engage"
+version = "0.1.0"
+dependencies = [
+ "ed25519-dalek",
+ "serde",
+ "serde_json",
+ "vervet-core",
+ "vervet-scope",
+ "vervet-technique",
+ "vervet-techniques",
 ]
 
 [[package]]

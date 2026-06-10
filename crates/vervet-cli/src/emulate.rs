@@ -1,36 +1,40 @@
-//! `vervet recon` — authorize T1046 through the gate, engage, emit a receipt.
+//! `vervet emulate <ATTACK_ID>` — authorize and fire any registered technique.
 
 use std::net::Ipv4Addr;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use vervet_engage::{EngageError, run};
-use vervet_scope::{Gate, Manifest, Request};
+use vervet_scope::{Credentials, Gate, Manifest, Request};
 use vervet_technique::find;
 
 use crate::args;
 
-/// `vervet recon --manifest <f> --authority <hex> --target <ipv4> [--ports a,b]`
-///
-/// Emits an audited engagement receipt. A denial prints the typed reason and
-/// exits 2; usage/IO errors exit 1.
+const USAGE: &str = "usage: vervet emulate <ATTACK_ID> --manifest <f> --authority <hex> \
+--target <ipv4> [--ports a,b] [--users u1,u2] [--password p]";
+
+/// Emits an audited engagement receipt for the named technique. A denial prints
+/// the typed reason and exits 2; usage/IO errors exit 1.
 pub fn run_cmd(argv: &[String]) -> ExitCode {
-    let (Some(manifest_path), Some(authority), Some(target)) = (
-        args::value(argv, "--manifest"),
-        args::value(argv, "--authority"),
-        args::value(argv, "--target"),
-    ) else {
-        eprintln!(
-            "usage: vervet recon --manifest <f> --authority <hex> --target <ipv4> [--ports a,b]"
-        );
+    let Some(attack_id) = argv.first().filter(|a| !a.starts_with('-')) else {
+        eprintln!("{USAGE}");
         return ExitCode::FAILURE;
     };
+    let rest = &argv[1..];
 
+    let (Some(manifest_path), Some(authority), Some(target)) = (
+        args::value(rest, "--manifest"),
+        args::value(rest, "--authority"),
+        args::value(rest, "--target"),
+    ) else {
+        eprintln!("{USAGE}");
+        return ExitCode::FAILURE;
+    };
     let Ok(target) = target.parse::<Ipv4Addr>() else {
         eprintln!("error: --target must be an IPv4 address");
         return ExitCode::FAILURE;
     };
-    let ports = args::value(argv, "--ports")
+    let ports = args::value(rest, "--ports")
         .map(parse_ports)
         .unwrap_or_default();
 
@@ -42,11 +46,15 @@ pub fn run_cmd(argv: &[String]) -> ExitCode {
         Ok(g) => g,
         Err(d) => return deny(&d.to_string()),
     };
-    let Some(technique) = find("T1046") else {
-        return fail("T1046 is not registered");
+    let Some(technique) = find(attack_id) else {
+        return fail(&format!("{attack_id} is not a registered technique"));
     };
 
-    let request = Request { target, ports };
+    let mut request = Request::new(target, ports);
+    if let Some(creds) = credentials(rest) {
+        request = request.with_credentials(creds);
+    }
+
     match run(&gate, &manifest, technique, request, now()) {
         Ok(receipt) => {
             println!(
@@ -58,6 +66,23 @@ pub fn run_cmd(argv: &[String]) -> ExitCode {
         Err(EngageError::Denied(d)) => deny(&d.to_string()),
         Err(EngageError::Assembly(e)) => fail(&e.to_string()),
     }
+}
+
+/// Build credentials from `--password` (required) and `--users` (comma list).
+fn credentials(args: &[String]) -> Option<Credentials> {
+    let password = args::value(args, "--password")?.to_string();
+    let usernames = args::value(args, "--users")
+        .map(|s| {
+            s.split(',')
+                .map(|u| u.trim().to_string())
+                .filter(|u| !u.is_empty())
+                .collect()
+        })
+        .unwrap_or_default();
+    Some(Credentials {
+        usernames,
+        password,
+    })
 }
 
 fn now() -> u64 {

@@ -23,4 +23,7 @@ pub struct TechniqueMeta {
     pub name: &'static str,
     pub summary: &'static str,
     pub side_effect: SideEffect,
+    /// Human/LLM-readable list of the inputs this technique consumes, so a
+    /// consumer of `describe` knows what to pass to `emulate`.
+    pub inputs: &'static [&'static str],
 }

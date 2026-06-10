@@ -18,6 +18,7 @@ const META: TechniqueMeta = TechniqueMeta {
     name: "Network Service Discovery",
     summary: "Probe common TCP service ports on an in-scope host to map reachable services.",
     side_effect: SideEffect::Observable,
+    inputs: &["target", "ports (optional; default common service ports)"],
 };
 
 /// Ports probed when a request does not specify its own set.

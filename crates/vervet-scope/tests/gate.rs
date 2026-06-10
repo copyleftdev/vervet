@@ -36,10 +36,7 @@ fn signed(claims: Claims) -> (Manifest, String) {
 }
 
 fn req(last_octet: u8) -> Request {
-    Request {
-        target: format!("10.0.0.{last_octet}").parse().unwrap(),
-        ports: vec![445],
-    }
+    Request::new(format!("10.0.0.{last_octet}").parse().unwrap(), vec![445])
 }
 
 #[test]
@@ -82,10 +79,7 @@ fn enforces_window_technique_and_scope() {
         gate.authorize(
             &m,
             T1046,
-            Request {
-                target: "192.168.1.1".parse().unwrap(),
-                ports: vec![]
-            },
+            Request::new("192.168.1.1".parse().unwrap(), vec![]),
             1500
         ),
         Err(Denied::TargetOutOfScope)

@@ -4,8 +4,8 @@ use std::process::ExitCode;
 
 mod args;
 mod describe;
+mod emulate;
 mod explain;
-mod recon;
 mod schema;
 
 // Force-link the technique crate so its `inventory::submit!` entries register.
@@ -16,14 +16,14 @@ fn main() -> ExitCode {
     match argv.first().map(String::as_str) {
         Some("describe") => describe::run(),
         Some("schema") => schema::run(),
-        Some("recon") => recon::run_cmd(&argv[1..]),
+        Some("emulate") => emulate::run_cmd(&argv[1..]),
         Some("explain") => explain::run(&argv[1..]),
         Some("--version") => {
             println!("vervet {}", env!("CARGO_PKG_VERSION"));
             ExitCode::SUCCESS
         }
         _ => {
-            eprintln!("usage: vervet <describe|schema|recon|explain> [args]");
+            eprintln!("usage: vervet <describe|schema|emulate|explain> [args]");
             ExitCode::FAILURE
         }
     }

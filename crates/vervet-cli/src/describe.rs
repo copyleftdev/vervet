@@ -13,7 +13,8 @@ pub fn run() -> ExitCode {
     let doc = json!({
         "tool": "vervet",
         "protocol": { "schema": "vq1", "version": "0.1.0" },
-        "verbs": ["describe", "schema", "recon", "explain"],
+        "verbs": ["describe", "schema", "emulate", "explain"],
+        "output": "emulate emits a receipt: a vq1 evidence envelope bound to a tamper-evident audit chain",
         "authorization": "every engagement requires an Ed25519-signed scope manifest",
         "techniques": techniques,
     });

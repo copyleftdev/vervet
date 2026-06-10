@@ -42,10 +42,7 @@ fn receipt_audit_chain_verifies() {
     let (manifest, authority) = fixture();
     let gate = Gate::new(&authority).unwrap();
     let technique = find("T1046").unwrap();
-    let request = Request {
-        target: Ipv4Addr::LOCALHOST,
-        ports: vec![port],
-    };
+    let request = Request::new(Ipv4Addr::LOCALHOST, vec![port]);
 
     let receipt = run(&gate, &manifest, technique, request, 1).expect("authorized");
 
@@ -62,10 +59,7 @@ fn out_of_scope_is_denied() {
     let (manifest, authority) = fixture();
     let gate = Gate::new(&authority).unwrap();
     let technique = find("T1046").unwrap();
-    let request = Request {
-        target: "10.9.9.9".parse().unwrap(),
-        ports: vec![80],
-    };
+    let request = Request::new("10.9.9.9".parse().unwrap(), vec![80]);
     let err = run(&gate, &manifest, technique, request, 1).unwrap_err();
     assert!(matches!(err, EngageError::Denied(_)));
 }

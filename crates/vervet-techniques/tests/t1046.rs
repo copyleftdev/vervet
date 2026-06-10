@@ -43,10 +43,7 @@ fn discovers_an_open_loopback_port() {
     let (manifest, authority) = signed(claims);
     let gate = Gate::new(&authority).unwrap();
 
-    let request = Request {
-        target: Ipv4Addr::LOCALHOST,
-        ports: vec![port],
-    };
+    let request = Request::new(Ipv4Addr::LOCALHOST, vec![port]);
     let technique = find("T1046").expect("T1046 registered");
     let grant = gate
         .authorize(&manifest, TechniqueId("T1046"), request, 1)

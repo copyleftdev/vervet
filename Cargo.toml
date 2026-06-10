@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/vervet-core",
+    "crates/vervet-scope",
+    "crates/vervet-technique",
+    "crates/vervet-techniques",
+    "crates/vervet-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "AGPL-3.0-or-later"
+authors = ["copyleftdev <don@codetestcode.io>"]
+repository = "https://github.com/copyleftdev/vervet"
+homepage = "https://github.com/copyleftdev/vervet"
+keywords = ["security", "adversary-emulation", "att&ck", "ai", "cli"]
+categories = ["command-line-utilities"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+blake3 = "1"
+ed25519-dalek = "2"
+inventory = "0.3"
+vervet-core = { path = "crates/vervet-core" }
+vervet-scope = { path = "crates/vervet-scope" }
+vervet-technique = { path = "crates/vervet-technique" }
+vervet-techniques = { path = "crates/vervet-techniques" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

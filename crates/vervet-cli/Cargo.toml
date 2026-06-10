@@ -1,0 +1,20 @@
+[package]
+name = "vervet-cli"
+description = "The vervet command-line contract: describe, schema, recon, explain."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "vervet"
+path = "src/main.rs"
+
+[dependencies]
+serde_json.workspace = true
+vervet-core.workspace = true
+vervet-scope.workspace = true
+vervet-technique.workspace = true
+vervet-techniques.workspace = true

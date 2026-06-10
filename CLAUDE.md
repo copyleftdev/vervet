@@ -17,13 +17,19 @@ Ed25519-signed scope manifest. Out-of-scope is a hard, typed refusal.
 | `vervet-technique` | the `Technique` trait + `inventory` registry (self-registration) |
 | `vervet-techniques` | the techniques themselves — one self-contained file per ATT&CK id (T1046 discovery, T1110.003 password spray) |
 | `vervet-engage` | orchestration: authorize → engage → emit an audited `Receipt` (the one path every technique-firing verb funnels through) |
-| `vervet-cli` | the verb surface: `describe`, `schema`, `emulate`, `explain` |
+| `vervet-report` | fold receipts into an ATT&CK coverage map — pure JSON aggregation, no registry lookup |
+| `vervet-cli` | the verb surface: `describe`, `schema`, `emulate`, `report`, `explain` |
 
 `emulate <ATTACK_ID>` drives *any* registered technique — adding a technique
 needs no CLI change. It emits a **Receipt**: a vq1 evidence envelope bound to a
 tamper-evident audit chain. Each `audit[n].prev` is the blake3 handle of
 `audit[n-1]`, so any removed or altered action breaks every later link.
 `describe` lists each technique's `inputs` so a consumer knows what to pass.
+
+Receipts are **self-describing**: the summary carries the technique name, ATT&CK
+id and tactic, so `report <receipt...>` rolls them into a coverage map grouped
+by tactic with no registry lookup. Detection is reported as `unobserved`, never
+`undetected` — vervet doesn't see your blue team.
 
 ## Invariants
 

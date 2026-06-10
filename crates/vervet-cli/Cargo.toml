@@ -19,3 +19,4 @@ vervet-scope.workspace = true
 vervet-technique.workspace = true
 vervet-techniques.workspace = true
 vervet-engage.workspace = true
+vervet-report.workspace = true

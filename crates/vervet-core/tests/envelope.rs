@@ -5,7 +5,12 @@ use vervet_core::envelope::Envelope;
 use vervet_core::evidence::Evidence;
 
 fn sample() -> Evidence {
-    let mut ev = Evidence::new(TechniqueId("T1046"), Tactic::Discovery, "eng-1");
+    let mut ev = Evidence::new(
+        TechniqueId("T1046"),
+        Tactic::Discovery,
+        "Network Service Discovery",
+        "eng-1",
+    );
     ev.observe("port_open", "10.0.0.5", "tcp/22");
     ev.observe("port_open", "10.0.0.5", "tcp/445");
     ev
@@ -17,6 +22,7 @@ fn one_handle_per_observation() {
     assert_eq!(env.summary.observation_count, 2);
     assert_eq!(env.handles.len(), 2);
     assert_eq!(env.summary.attack_id, "T1046");
+    assert_eq!(env.summary.tactic, "discovery");
 }
 
 #[test]

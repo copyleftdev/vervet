@@ -10,3 +10,14 @@ pub enum Tactic {
     CredentialAccess,
     LateralMovement,
 }
+
+impl Tactic {
+    /// The snake_case identifier, matching the serialized form.
+    pub const fn as_str(&self) -> &'static str {
+        match self {
+            Tactic::Discovery => "discovery",
+            Tactic::CredentialAccess => "credential_access",
+            Tactic::LateralMovement => "lateral_movement",
+        }
+    }
+}

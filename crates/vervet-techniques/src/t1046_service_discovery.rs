@@ -33,7 +33,7 @@ impl Technique for ServiceDiscovery {
 
     fn engage(&self, grant: &Grant) -> Evidence {
         let req = grant.request();
-        let mut ev = Evidence::new(META.id, META.tactic, grant.engagement_id());
+        let mut ev = Evidence::new(META.id, META.tactic, META.name, grant.engagement_id());
         let ports = if req.ports.is_empty() {
             DEFAULT_PORTS
         } else {

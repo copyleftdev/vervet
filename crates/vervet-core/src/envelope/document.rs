@@ -24,8 +24,9 @@ impl Envelope {
             handles.insert(handle.to_string(), serde_json::to_value(obs)?);
         }
         let summary = Summary {
-            technique: ev.technique.to_string(),
+            name: ev.name.to_string(),
             attack_id: ev.technique.as_str().to_string(),
+            tactic: ev.tactic.as_str().to_string(),
             engagement_id: ev.engagement_id.clone(),
             observation_count: ev.observations.len(),
         };

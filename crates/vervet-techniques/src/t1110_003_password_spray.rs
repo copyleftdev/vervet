@@ -38,7 +38,7 @@ impl Technique for PasswordSpray {
     fn engage(&self, grant: &Grant) -> Evidence {
         let req = grant.request();
         let target = req.target.to_string();
-        let mut ev = Evidence::new(META.id, META.tactic, grant.engagement_id());
+        let mut ev = Evidence::new(META.id, META.tactic, META.name, grant.engagement_id());
 
         let Some(creds) = req.credentials.as_ref() else {
             ev.observe("spray_skipped", target.as_str(), "no credentials supplied");

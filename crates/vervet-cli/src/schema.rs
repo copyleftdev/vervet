@@ -21,8 +21,9 @@ pub fn run() -> ExitCode {
             "summary": {
                 "type": "object",
                 "properties": {
-                    "technique": { "type": "string" },
+                    "name": { "type": "string" },
                     "attack_id": { "type": "string" },
+                    "tactic": { "type": "string" },
                     "engagement_id": { "type": "string" },
                     "observation_count": { "type": "integer" }
                 }

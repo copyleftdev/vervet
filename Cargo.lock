@@ -412,6 +412,7 @@ dependencies = [
  "vervet-engage",
  "vervet-report",
  "vervet-scope",
+ "vervet-store",
  "vervet-technique",
  "vervet-techniques",
 ]
@@ -454,6 +455,14 @@ dependencies = [
  "serde",
  "serde_json",
  "vervet-core",
+]
+
+[[package]]
+name = "vervet-store"
+version = "0.1.0"
+dependencies = [
+ "blake3",
+ "serde_json",
 ]
 
 [[package]]

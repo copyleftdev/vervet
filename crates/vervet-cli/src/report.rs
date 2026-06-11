@@ -3,13 +3,35 @@
 use std::process::ExitCode;
 
 use serde_json::Value;
-use vervet_report::coverage;
+use vervet_report::{Coverage, coverage};
+use vervet_store::Store;
 
-/// `vervet report <receipt.json> [receipt2.json ...]`
+use crate::args;
+
+/// `vervet report <receipt.json ...>`  or  `vervet report --store <dir> [--engagement <id>]`
 pub fn run_cmd(argv: &[String]) -> ExitCode {
+    if let Some(dir) = args::value(argv, "--store") {
+        return from_store(dir, args::value(argv, "--engagement"));
+    }
+    from_files(argv)
+}
+
+/// Aggregate every receipt in a run store, optionally filtered to one engagement.
+fn from_store(dir: &str, engagement: Option<&str>) -> ExitCode {
+    match Store::open(dir).load_all(engagement) {
+        Ok(receipts) => emit(&coverage(&receipts)),
+        Err(e) => {
+            eprintln!("error: reading store {dir}: {e}");
+            ExitCode::FAILURE
+        }
+    }
+}
+
+/// Aggregate receipts passed as file-path arguments.
+fn from_files(argv: &[String]) -> ExitCode {
     let paths: Vec<&String> = argv.iter().filter(|a| !a.starts_with('-')).collect();
     if paths.is_empty() {
-        eprintln!("usage: vervet report <receipt.json> [receipt2.json ...]");
+        eprintln!("usage: vervet report <receipt.json ...> | --store <dir> [--engagement <id>]");
         return ExitCode::FAILURE;
     }
 
@@ -30,11 +52,13 @@ pub fn run_cmd(argv: &[String]) -> ExitCode {
             }
         }
     }
+    emit(&coverage(&receipts))
+}
 
-    let cov = coverage(&receipts);
+fn emit(cov: &Coverage) -> ExitCode {
     println!(
         "{}",
-        serde_json::to_string_pretty(&cov).expect("coverage serialize")
+        serde_json::to_string_pretty(cov).expect("coverage serialize")
     );
     ExitCode::SUCCESS
 }

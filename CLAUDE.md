@@ -19,6 +19,7 @@ Ed25519-signed scope manifest. Out-of-scope is a hard, typed refusal.
 | `vervet-verify` | the auth-verifier seam: pluggable backends (reachability, real SSH protocol probe) that judge an attempt → `Verdict` |
 | `vervet-engage` | orchestration: authorize → engage → emit an audited `Receipt` (the one path every technique-firing verb funnels through) |
 | `vervet-report` | fold receipts into an ATT&CK coverage map — pure JSON aggregation, no registry lookup |
+| `vervet-store` | content-addressed run store: persist receipts under `<root>/<engagement>/<run-id>.json` |
 | `vervet-cli` | the verb surface: `describe`, `schema`, `emulate`, `report`, `explain` |
 
 `emulate <ATTACK_ID>` drives *any* registered technique — adding a technique
@@ -31,6 +32,11 @@ Receipts are **self-describing**: the summary carries the technique name, ATT&CK
 id and tactic, so `report <receipt...>` rolls them into a coverage map grouped
 by tactic with no registry lookup. Detection is reported as `unobserved`, never
 `undetected` — vervet doesn't see your blue team.
+
+Receipts can be **persisted**: `emulate --store <dir>` (or `VERVET_STORE`) writes
+each receipt to a content-addressed run store grouped by engagement, and
+`report --store <dir> [--engagement <id>]` aggregates them with no file-piping —
+the loop an AI orchestrator drives across many engagements.
 
 Credential-access techniques judge attempts through the `Verifier` seam. v0
 ships protocol-level probes only — the SSH probe does a real RFC-4253 version

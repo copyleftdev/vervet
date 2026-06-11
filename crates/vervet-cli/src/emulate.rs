@@ -4,14 +4,15 @@ use std::net::Ipv4Addr;
 use std::process::ExitCode;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use vervet_engage::{EngageError, run};
+use vervet_engage::{EngageError, Receipt, run};
 use vervet_scope::{Credentials, Gate, Manifest, Request};
+use vervet_store::{RunRef, Store};
 use vervet_technique::find;
 
 use crate::args;
 
 const USAGE: &str = "usage: vervet emulate <ATTACK_ID> --manifest <f> --authority <hex> \
---target <ipv4> [--ports a,b] [--users u1,u2] [--password p]";
+--target <ipv4> [--ports a,b] [--users u1,u2] [--password p] [--store dir]";
 
 /// Emits an audited engagement receipt for the named technique. A denial prints
 /// the typed reason and exits 2; usage/IO errors exit 1.
@@ -57,6 +58,12 @@ pub fn run_cmd(argv: &[String]) -> ExitCode {
 
     match run(&gate, &manifest, technique, request, now()) {
         Ok(receipt) => {
+            if let Some(dir) = store_dir(rest) {
+                match persist(&dir, &receipt) {
+                    Ok(r) => eprintln!("stored: {} ({})", r.path.display(), r.run_id),
+                    Err(e) => eprintln!("warning: could not store receipt: {e}"),
+                }
+            }
             println!(
                 "{}",
                 serde_json::to_string_pretty(&receipt).expect("receipt serialize")
@@ -66,6 +73,19 @@ pub fn run_cmd(argv: &[String]) -> ExitCode {
         Err(EngageError::Denied(d)) => deny(&d.to_string()),
         Err(EngageError::Assembly(e)) => fail(&e.to_string()),
     }
+}
+
+/// Store directory from `--store`, falling back to the `VERVET_STORE` env var.
+fn store_dir(args: &[String]) -> Option<String> {
+    args::value(args, "--store")
+        .map(String::from)
+        .or_else(|| std::env::var("VERVET_STORE").ok())
+}
+
+/// Persist a receipt to the run store.
+fn persist(dir: &str, receipt: &Receipt) -> Result<RunRef, String> {
+    let value = serde_json::to_value(receipt).map_err(|e| e.to_string())?;
+    Store::open(dir).put(&value).map_err(|e| e.to_string())
 }
 
 /// Build credentials from `--password` (required) and `--users` (comma list).

@@ -5,5 +5,6 @@
 //! workspace changes: `describe`, `schema`, dispatch and reporting all read the
 //! inventory.
 
+mod t1021_remote_services;
 mod t1046_service_discovery;
 mod t1110_003_password_spray;

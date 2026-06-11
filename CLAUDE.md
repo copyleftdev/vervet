@@ -15,7 +15,7 @@ Ed25519-signed scope manifest. Out-of-scope is a hard, typed refusal.
 | `vervet-core` | foundational types: ATT&CK ids, the vq1 envelope, content-addressed evidence |
 | `vervet-scope` | authorization spine: signed `Manifest`, IPv4 CIDR scope, the unforgeable `Grant` token, audit chain |
 | `vervet-technique` | the `Technique` trait + `inventory` registry (self-registration) |
-| `vervet-techniques` | the techniques themselves — one self-contained file per ATT&CK id (T1046 discovery, T1110.003 password spray) |
+| `vervet-techniques` | the techniques themselves — one self-contained file per ATT&CK id (T1046 discovery, T1021 remote services, T1110.003 password spray) |
 | `vervet-verify` | the auth-verifier seam: pluggable backends (reachability, real SSH protocol probe) that judge an attempt → `Verdict` |
 | `vervet-engage` | orchestration: authorize → engage → emit an audited `Receipt` (the one path every technique-firing verb funnels through) |
 | `vervet-report` | fold receipts into an ATT&CK coverage map — pure JSON aggregation, no registry lookup |

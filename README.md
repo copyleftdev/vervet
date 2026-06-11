@@ -1,4 +1,17 @@
-# vervet
+# vervet — AI-native adversary emulation & breach-and-attack simulation in Rust
+
+[![CI](https://github.com/copyleftdev/vervet/actions/workflows/ci.yml/badge.svg)](https://github.com/copyleftdev/vervet/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/vervet-cli.svg)](https://crates.io/crates/vervet-cli)
+[![docs.rs](https://img.shields.io/docsrs/vervet-core?label=docs.rs)](https://docs.rs/vervet-core)
+[![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+
+> **vervet** is a Rust **adversary-emulation** and **breach-and-attack-simulation
+> (BAS)** instrument designed for **AI / LLM orchestration**. Every primitive maps
+> to **MITRE ATT&CK**, emits typed, content-addressed, tamper-evident evidence,
+> and refuses to act outside an Ed25519-signed authorization scope. Built for
+> **red team**, **purple team**, **detection engineering**, and **security
+> automation** — atomic offensive **TTPs** an LLM can drive, in the spirit of
+> Caldera, Infection Monkey, and Atomic Red Team but inverted around the model.
 
 **An AI-native adversary-emulation instrument.** Infection Monkey, inverted: the
 LLM is the orchestrator, vervet is a fleet of atomic, deterministic emulation
@@ -273,3 +286,9 @@ detection.
 ## License
 
 AGPL-3.0-or-later — see [LICENSE](LICENSE).
+
+---
+
+<sub>**Topics:** adversary-emulation · breach-and-attack-simulation · MITRE ATT&CK ·
+red-team · purple-team · penetration-testing · offensive-security · detection-engineering ·
+security-automation · TTP · Rust · CLI · AI · LLM-agent · cybersecurity</sub>

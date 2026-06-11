@@ -75,5 +75,5 @@ since `judge` selects the SSH backend by port).
 ## Honest limits
 
 Live network observations are timestamped facts, not bitwise-reproducible.
-`recon` cannot know whether your blue team saw it — evidence is marked
+`emulate` cannot know whether your blue team saw it — evidence is marked
 `unobserved`, never `undetected`.

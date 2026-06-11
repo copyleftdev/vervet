@@ -1,6 +1,6 @@
 [package]
 name = "vervet-cli"
-description = "The vervet command-line contract: describe, schema, recon, explain."
+description = "The vervet command-line contract: describe, schema, emulate, report, explain."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

@@ -38,12 +38,18 @@ each receipt to a content-addressed run store grouped by engagement, and
 `report --store <dir> [--engagement <id>]` aggregates them with no file-piping —
 the loop an AI orchestrator drives across many engagements.
 
-Credential-access techniques judge attempts through the `Verifier` seam. v0
-ships protocol-level probes only — the SSH probe does a real RFC-4253 version
-exchange to confirm the service and capture its banner, but reaches at most
-`ssh_confirmed`, never `valid`/`invalid`. The `Verdict` spectrum reserves
-`Valid`/`Invalid` for a credential-asserting backend that drops in behind the
-same trait (a heavyweight SSH stack), with no technique change.
+Credential-access techniques judge attempts through the `Verifier` seam. The
+default build ships protocol-level probes only — the SSH probe does a real
+RFC-4253 version exchange to confirm the service and capture its banner, but
+reaches at most `ssh_confirmed`.
+
+The `--features ssh-auth` build adds `SshAuth`, a credential-asserting backend
+(libssh2 via `ssh2`) that performs real password auth and returns
+`valid`/`invalid`; the spray uses it on SSH ports when the feature is on. It is
+opt-in so the default binary stays lean and static. Its end-to-end test stands
+up a real sshd with testcontainers (`cargo test -p vervet-verify --features
+ssh-auth`, needs Docker) — kept out of the default suite. Password material is
+never written to evidence regardless of verdict.
 
 ## Invariants
 

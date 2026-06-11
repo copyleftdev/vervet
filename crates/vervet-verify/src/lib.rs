@@ -9,9 +9,15 @@ pub mod reachability;
 pub mod ssh;
 pub mod verdict;
 
+#[cfg(feature = "ssh-auth")]
+pub mod ssh_auth;
+
 pub use reachability::Reachability;
 pub use ssh::SshProbe;
 pub use verdict::Verdict;
+
+#[cfg(feature = "ssh-auth")]
+pub use ssh_auth::SshAuth;
 
 use std::net::Ipv4Addr;
 

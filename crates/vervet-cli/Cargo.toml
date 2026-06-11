@@ -21,3 +21,8 @@ vervet-techniques.workspace = true
 vervet-engage.workspace = true
 vervet-report.workspace = true
 vervet-store.workspace = true
+
+[features]
+# Real SSH credential verification for the spray (valid/invalid). Off by default
+# so the standard binary stays lean and static.
+ssh-auth = ["vervet-techniques/ssh-auth"]

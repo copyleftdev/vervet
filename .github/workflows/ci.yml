@@ -33,3 +33,18 @@ jobs:
         run: cargo clippy --workspace --all-targets -- -D warnings
       - name: cargo test
         run: cargo test --workspace --no-fail-fast
+
+  ssh-auth-e2e:
+    name: ssh-auth e2e (docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: system libs for ssh2
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
+      - name: clippy (ssh-auth)
+        run: cargo clippy -p vervet-cli --features ssh-auth --all-targets -- -D warnings
+      - name: e2e against a real sshd
+        run: cargo test -p vervet-verify --features ssh-auth --no-fail-fast
+

@@ -1,11 +1,5 @@
-<div align="center">
-  <img src="assets/vervet-mark.svg" alt="vervet abstract geometry mark" width="188">
-  <h1>vervet</h1>
-</div>
-
 <p align="center">
-  <strong>AI-native adversary emulation and breach-and-attack simulation in Rust.</strong><br>
-  Atomic MITRE ATT&CK primitives with signed scope, deterministic execution, and tamper-evident evidence.
+  <img src="assets/vervet-github-hero.svg" alt="vervet: signed adversary emulation for AI security orchestration">
 </p>
 
 <p align="center">
@@ -14,14 +8,16 @@
   <a href="Cargo.toml"><img alt="Rust edition 2024" src="https://img.shields.io/badge/edition-2024-244148?style=flat-square&labelColor=172023"></a>
   <a href="LICENSE"><img alt="license AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-6e9f98?style=flat-square&labelColor=172023"></a>
   <a href="#authorization-model"><img alt="security model: signed scope required" src="https://img.shields.io/badge/scope-Ed25519%20signed-f2c36b?style=flat-square&labelColor=172023"></a>
+  <a href="#techniques"><img alt="MITRE ATT&CK techniques: 4" src="https://img.shields.io/badge/ATT%26CK-4%20techniques-c18453?style=flat-square&labelColor=172023"></a>
+  <a href="#the-loop"><img alt="evidence schema vq1" src="https://img.shields.io/badge/evidence-vq1-8fbfb4?style=flat-square&labelColor=172023"></a>
 </p>
 
 ---
 
-**vervet** is a single-binary adversary-emulation instrument built for red
-teams, purple teams, detection engineers, and AI/LLM security orchestrators.
-The model decides the next step; vervet provides the constrained, typed,
-auditable primitive that can actually run.
+**vervet** is a single-binary adversary-emulation instrument for red teams,
+purple teams, detection engineers, and AI/LLM security orchestrators. The model
+decides the next step; vervet provides the narrow, typed, auditable primitive
+that can actually run.
 
 It is Infection Monkey inverted: no central server, no agent fleet, no hidden
 control plane. The CLI is the contract. An orchestrator calls `describe`, fires
@@ -33,19 +29,28 @@ and can fold receipts into ATT&CK coverage with `report`.
 > cannot act against a target, technique, or time window the manifest does not
 > authorize.
 
-## Why it exists
+## At a glance
+
+| Surface | What matters |
+|---|---|
+| Runtime | Rust 2024 workspace, CLI-first, no server required |
+| Orchestrator contract | `describe` exposes verbs, techniques, and required inputs |
+| Authorization | Ed25519-signed manifest checked before every state-changing action |
+| Evidence | vq1 receipts with content-addressed handles |
+| Auditability | blake3-linked audit entries make timeline edits visible |
+| Coverage | `report` folds receipts into MITRE ATT&CK tactics and techniques |
+| Safety posture | Out-of-scope requests fail closed with typed denial and exit code `2` |
+
+## Design center
 
 Modern AI agents can plan a security engagement, but they still need a narrow
-execution layer with real boundaries. vervet is that layer:
+execution layer with real boundaries. vervet is built around three constraints:
 
-| Need | vervet answer |
+| Constraint | Implementation |
 |---|---|
-| Give an LLM a tool contract | `vervet describe` emits protocol, verbs, techniques, and inputs |
-| Prevent unauthorized action | `Gate::authorize` mints an unforgeable `Grant`; techniques require it |
-| Preserve evidence | Every run emits a vq1 receipt with content-addressed handles |
-| Prove the timeline was not rewritten | Audit entries link through blake3 predecessor handles |
-| Add techniques without central churn | One technique file plus one `mod` line; registry-driven dispatch |
-| Report ATT&CK coverage | `vervet report` aggregates receipts by tactic and technique |
+| An LLM should know exactly what it can call | `vervet describe` emits the machine-readable contract |
+| A technique should not run by convention | `Gate::authorize` mints an unforgeable `Grant` required by techniques |
+| Evidence should survive scrutiny | Receipts carry typed summaries and audit entries linked to predecessor handles |
 
 ## The loop
 
@@ -58,6 +63,10 @@ describe -> emulate <ATTACK_ID> -> receipt.vq1 -> report
               |                    +-- content-addressed evidence
               +-- authorize -> engage -> emit
 ```
+
+Every state-changing path flows through `authorize -> engage -> emit`. That is
+the core property of the project: the same boundary governs network discovery,
+remote-service checks, valid-account assertions, and password-spray emulation.
 
 ### 1. Sign a scope manifest
 
@@ -187,6 +196,9 @@ vervet report --store ./runs --engagement acme-2026-q2
 
 ## Verbs
 
+The CLI surface is intentionally small enough for an agent to reason about and
+strict enough for a human operator to audit.
+
 | verb | purpose |
 |---|---|
 | `describe` | Emit the machine-readable protocol, verbs, and technique inputs |
@@ -197,6 +209,9 @@ vervet report --store ./runs --engagement acme-2026-q2
 | `help` | Human-facing CLI help; `-V` / `--version` for version output |
 
 ## Techniques
+
+The current registry is deliberately compact. Each entry maps to MITRE ATT&CK
+and is implemented as one reviewed, in-tree primitive.
 
 | ATT&CK id | name | tactic |
 |---|---|---|
@@ -234,6 +249,9 @@ that performs real password authentication through `ssh2` and returns
 
 ## Build
 
+Default builds stay lean and protocol-level. Credential-asserting SSH is
+available, but it is an explicit feature flag.
+
 ```sh
 cargo build --release
 cargo build --release -p vervet-cli --features ssh-auth
@@ -243,6 +261,8 @@ Requires Rust 1.88+ with edition 2024. The default binary is dependency-light
 and ships protocol probes only; `ssh-auth` is opt-in so the default stays lean.
 
 ## Test
+
+The default suite is hermetic: no Docker and no external services.
 
 ```sh
 cargo test --workspace

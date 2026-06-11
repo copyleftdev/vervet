@@ -21,7 +21,9 @@ license = "AGPL-3.0-or-later"
 authors = ["copyleftdev <don@codetestcode.io>"]
 repository = "https://github.com/copyleftdev/vervet"
 homepage = "https://github.com/copyleftdev/vervet"
-keywords = ["security", "adversary-emulation", "att&ck", "ai", "cli"]
+readme = "README.md"
+# crates.io keywords must be alphanumeric/hyphen: "att&ck" would be rejected.
+keywords = ["security", "adversary-emulation", "mitre-attack", "ai", "cli"]
 categories = ["command-line-utilities"]
 
 [workspace.dependencies]

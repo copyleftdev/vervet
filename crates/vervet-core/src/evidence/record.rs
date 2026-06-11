@@ -18,10 +18,15 @@ pub struct Observation {
 /// The typed evidence produced by one technique engagement.
 #[derive(Clone, Debug, Serialize)]
 pub struct Evidence {
+    /// The ATT&CK technique that produced this evidence.
     pub technique: TechniqueId,
+    /// The tactic the technique advances.
     pub tactic: Tactic,
+    /// The technique's human label, carried for self-describing receipts.
     pub name: &'static str,
+    /// The engagement this evidence belongs to.
     pub engagement_id: String,
+    /// Every fact observed during the engagement.
     pub observations: Vec<Observation>,
 }
 

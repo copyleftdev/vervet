@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 /// `signature` is an Ed25519 signature over the canonical JSON of `claims`.
 #[derive(Clone, Debug, Deserialize)]
 pub struct Manifest {
+    /// The signed payload: scope, window, and allowlist.
     pub claims: Claims,
     /// Hex-encoded 64-byte Ed25519 signature over the canonical claims JSON.
     pub signature: String,
@@ -14,7 +15,9 @@ pub struct Manifest {
 /// The signed body of a manifest. Field order is the canonical signing order.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Claims {
+    /// Identifier for the engagement this manifest authorizes.
     pub engagement_id: String,
+    /// The operator the authority cleared to run it.
     pub operator: String,
     /// IPv4 CIDRs the operator may act against, e.g. `10.0.0.0/24`.
     pub authorized_cidrs: Vec<String>,

@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! Foundational types for vervet: ATT&CK identifiers, the vq1 evidence
 //! envelope, and content-addressed evidence records.
 //!

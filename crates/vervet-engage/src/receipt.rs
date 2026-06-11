@@ -9,6 +9,8 @@ use vervet_scope::AuditEntry;
 /// removing or altering any action breaks every link after it.
 #[derive(Clone, Debug, Serialize)]
 pub struct Receipt {
+    /// The vq1 evidence envelope produced by the engagement.
     pub envelope: Envelope,
+    /// The hash chain of actions that produced the evidence.
     pub audit: Vec<AuditEntry>,
 }

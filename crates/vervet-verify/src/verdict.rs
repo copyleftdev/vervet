@@ -13,7 +13,10 @@ pub enum Verdict {
     /// Connected, but the service is not the expected protocol.
     NotSsh,
     /// The expected service was confirmed by protocol banner.
-    ServiceConfirmed { banner: String },
+    ServiceConfirmed {
+        /// The version banner the service announced.
+        banner: String,
+    },
     /// Credentials authenticated (reserved for a credential-asserting backend).
     Valid,
     /// Credentials were rejected (reserved for a credential-asserting backend).

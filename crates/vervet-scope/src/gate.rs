@@ -11,11 +11,17 @@ use crate::manifest::Manifest;
 /// as honest, typed refusal, never a silent failure.
 #[derive(Debug, PartialEq, Eq)]
 pub enum Denied {
+    /// The manifest signature failed to verify against the authority key.
     BadSignature,
+    /// The current time falls outside the engagement window.
     OutsideWindow,
+    /// The technique is absent from the manifest allowlist.
     TechniqueNotAllowed,
+    /// The target lies within no authorized CIDR.
     TargetOutOfScope,
+    /// The target falls within an excluded CIDR.
     TargetExcluded,
+    /// The authority key or signature could not be decoded.
     MalformedKey,
 }
 

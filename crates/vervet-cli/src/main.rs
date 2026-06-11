@@ -6,6 +6,7 @@ mod args;
 mod describe;
 mod emulate;
 mod explain;
+mod help;
 mod report;
 mod schema;
 
@@ -20,12 +21,19 @@ fn main() -> ExitCode {
         Some("emulate") => emulate::run_cmd(&argv[1..]),
         Some("report") => report::run_cmd(&argv[1..]),
         Some("explain") => explain::run(&argv[1..]),
-        Some("--version") => {
+        Some("help") | Some("--help") | Some("-h") => help::run(),
+        Some("--version") | Some("-V") => {
             println!("vervet {}", env!("CARGO_PKG_VERSION"));
             ExitCode::SUCCESS
         }
-        _ => {
+        Some(verb) => {
+            eprintln!("error: unknown verb '{verb}'");
+            eprintln!("run `vervet help` for the verb surface");
+            ExitCode::FAILURE
+        }
+        None => {
             eprintln!("usage: vervet <describe|schema|emulate|report|explain> [args]");
+            eprintln!("run `vervet help` for details");
             ExitCode::FAILURE
         }
     }

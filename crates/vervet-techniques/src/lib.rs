@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! Registered emulation techniques. Each technique is one self-contained file
 //! that submits itself to the registry; this `lib.rs` only lists the modules.
 //!

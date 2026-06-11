@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! Receipt persistence: a content-addressed run store on the local filesystem.
 //!
 //! `emulate` writes each receipt here; `report` reads them back. Receipts are

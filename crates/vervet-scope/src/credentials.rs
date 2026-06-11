@@ -3,7 +3,9 @@
 /// One username/password pair, for per-account validation (T1078).
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Credential {
+    /// The account name to authenticate as.
     pub username: String,
+    /// The secret asserted for that account; never written to evidence.
     pub password: String,
 }
 
@@ -13,7 +15,10 @@ pub struct Credential {
 /// evidence — techniques redact them.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Credentials {
+    /// The usernames to spray a single password across.
     pub usernames: Vec<String>,
+    /// The one password tried against every spray username.
     pub password: String,
+    /// Explicit username/password pairs for per-account validation.
     pub pairs: Vec<Credential>,
 }

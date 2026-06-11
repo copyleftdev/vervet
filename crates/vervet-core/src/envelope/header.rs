@@ -5,7 +5,9 @@ use serde::Serialize;
 /// The protocol identity carried by every vq1 envelope.
 #[derive(Clone, Copy, Debug, Serialize)]
 pub struct Header {
+    /// The protocol name — `vq1`.
     pub schema: &'static str,
+    /// The protocol version this envelope conforms to.
     pub version: &'static str,
 }
 

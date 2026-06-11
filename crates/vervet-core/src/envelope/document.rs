@@ -9,8 +9,11 @@ use crate::evidence::{Evidence, Handle};
 /// every observation for drill-down.
 #[derive(Clone, Debug, Serialize)]
 pub struct Envelope {
+    /// Protocol identity: schema and version.
     pub header: Header,
+    /// The dense, read-first overview of the engagement.
     pub summary: Summary,
+    /// Every observation keyed by its content-addressed handle.
     pub handles: HandleMap,
 }
 

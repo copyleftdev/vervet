@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! Authorization spine. Every state-changing technique must pass through this
 //! crate to obtain a [`Grant`] — an unforgeable capability token. No technique
 //! can construct a `Grant` itself, so no technique can act out of scope.

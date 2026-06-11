@@ -8,9 +8,13 @@ use vervet_core::evidence::Handle;
 /// after it.
 #[derive(Clone, Debug, Serialize)]
 pub struct AuditEntry {
+    /// Position of this entry in the chain, from zero.
     pub seq: u64,
+    /// The engagement this action belongs to.
     pub engagement_id: String,
+    /// What happened, as a short action token.
     pub action: String,
+    /// Handle of the previous entry, committing this one to the chain.
     pub prev: String,
 }
 

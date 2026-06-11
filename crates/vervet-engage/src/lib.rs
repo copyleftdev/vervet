@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! The engagement orchestration primitive. `run` is the single canonical path
 //! from a signed manifest to an audited [`Receipt`]: it authorizes the request
 //! through the gate, engages the technique, and binds the evidence envelope to

@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! The auth-verifier seam. A [`Verifier`] judges one authentication attempt
 //! against a service and returns a [`Verdict`]. v0 ships protocol-level probes
 //! (no heavyweight SSH stack): they confirm *what* is listening, not yet
@@ -27,5 +29,6 @@ use std::net::Ipv4Addr;
 /// `username`/`password` are accepted by every backend so a credential-asserting
 /// verifier is a drop-in; probe backends ignore them.
 pub trait Verifier {
+    /// Judge one attempt against `target:port` and return a [`Verdict`].
     fn verify(&self, target: Ipv4Addr, port: u16, username: &str, password: &str) -> Verdict;
 }

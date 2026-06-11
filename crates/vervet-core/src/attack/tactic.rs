@@ -6,9 +6,13 @@ use serde::Serialize;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Tactic {
+    /// Gaining a first foothold on the target.
     InitialAccess,
+    /// Mapping the environment — hosts, services, accounts.
     Discovery,
+    /// Obtaining or validating account credentials.
     CredentialAccess,
+    /// Pivoting from one host to another with held access.
     LateralMovement,
 }
 

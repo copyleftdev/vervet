@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! The technique contract. Every emulation primitive implements [`Technique`]
 //! and registers itself via [`inventory`], so adding a technique is adding one
 //! file — no central dispatch is ever edited.

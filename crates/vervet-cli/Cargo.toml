@@ -21,8 +21,15 @@ vervet-techniques.workspace = true
 vervet-engage.workspace = true
 vervet-report.workspace = true
 vervet-store.workspace = true
+# Container harness for the black-box CLI e2e; opt-in with `ssh-auth` so the
+# default build never compiles it.
+testcontainers = { version = "0.15", optional = true }
 
 [features]
 # Real SSH credential verification for the spray (valid/invalid). Off by default
-# so the standard binary stays lean and static.
-ssh-auth = ["vervet-techniques/ssh-auth"]
+# so the standard binary stays lean and static. Also enables the Docker-backed
+# end-to-end test that drives the real binary against a live sshd.
+ssh-auth = ["vervet-techniques/ssh-auth", "dep:testcontainers"]
+
+[dev-dependencies]
+ed25519-dalek = { workspace = true, features = ["rand_core"] }

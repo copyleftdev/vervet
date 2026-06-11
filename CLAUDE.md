@@ -20,7 +20,8 @@ Ed25519-signed scope manifest. Out-of-scope is a hard, typed refusal.
 | `vervet-engage` | orchestration: authorize → engage → emit an audited `Receipt` (the one path every technique-firing verb funnels through) |
 | `vervet-report` | fold receipts into an ATT&CK coverage map — pure JSON aggregation, no registry lookup |
 | `vervet-store` | content-addressed run store: persist receipts under `<root>/<engagement>/<run-id>.json` |
-| `vervet-cli` | the verb surface: `describe`, `schema`, `emulate`, `report`, `explain` |
+| `vervet-cli` | the verb surface: `describe`, `schema`, `emulate`, `report`, `explain`, `help` |
+| `vervet-e2e` | Docker-backed end-to-end tests: drive the full pipeline against real services (no library code) |
 
 `emulate <ATTACK_ID>` drives *any* registered technique — adding a technique
 needs no CLI change. It emits a **Receipt**: a vq1 evidence envelope bound to a
@@ -46,10 +47,17 @@ reaches at most `ssh_confirmed`.
 The `--features ssh-auth` build adds `SshAuth`, a credential-asserting backend
 (libssh2 via `ssh2`) that performs real password auth and returns
 `valid`/`invalid`; the spray uses it on SSH ports when the feature is on. It is
-opt-in so the default binary stays lean and static. Its end-to-end test stands
-up a real sshd with testcontainers (`cargo test -p vervet-verify --features
-ssh-auth`, needs Docker) — kept out of the default suite. Password material is
-never written to evidence regardless of verdict.
+opt-in so the default binary stays lean and static. Password material is never
+written to evidence regardless of verdict.
+
+The credential path is proven end to end against real containerized services
+(testcontainers, all Docker-gated and out of the default suite): `vervet-verify
+--features ssh-auth` exercises the `SshAuth` backend against a real sshd;
+`vervet-e2e --features ssh-auth` drives the full `authorize → engage → emit`
+pipeline; `vervet-cli --features ssh-auth` drives the compiled binary
+black-box through `emulate → store → report`. The container's sshd is pinned to
+an SSH port (a dynamic host port would fall through to a reachability probe,
+since `judge` selects the SSH backend by port).
 
 ## Invariants
 

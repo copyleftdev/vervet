@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 //! Coverage reporting. Folds a set of engagement receipts into an ATT&CK
 //! coverage map — which techniques and tactics were exercised, how often, and
 //! how much evidence each produced. Pure aggregation over receipt JSON: no

@@ -18,10 +18,15 @@ pub enum SideEffect {
 /// file and emitted verbatim by `describe`.
 #[derive(Clone, Copy, Debug, Serialize)]
 pub struct TechniqueMeta {
+    /// The ATT&CK technique id, e.g. `T1046`.
     pub id: TechniqueId,
+    /// The tactic this technique advances.
     pub tactic: Tactic,
+    /// Human label for the technique.
     pub name: &'static str,
+    /// One-line description of what it does.
     pub summary: &'static str,
+    /// The footprint it leaves on the target.
     pub side_effect: SideEffect,
     /// Human/LLM-readable list of the inputs this technique consumes, so a
     /// consumer of `describe` knows what to pass to `emulate`.

@@ -476,6 +476,14 @@ dependencies = [
  "vervet-core",
  "vervet-scope",
  "vervet-technique",
+ "vervet-verify",
+]
+
+[[package]]
+name = "vervet-verify"
+version = "0.1.0"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

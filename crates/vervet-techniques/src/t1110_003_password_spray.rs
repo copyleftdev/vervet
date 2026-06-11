@@ -1,13 +1,12 @@
 //! T1110.003 — Password Spraying.
 
 use std::collections::BTreeSet;
-use std::net::{IpAddr, SocketAddr, TcpStream};
-use std::time::Duration;
 
 use vervet_core::attack::{Tactic, TechniqueId};
 use vervet_core::evidence::Evidence;
 use vervet_scope::Grant;
 use vervet_technique::{SideEffect, Technique, TechniqueMeta};
+use vervet_verify::{Reachability, SshProbe, Verifier};
 
 /// Attempt one password across many accounts, at most one attempt per account,
 /// to map weak-credential exposure without tripping lockout thresholds.
@@ -17,18 +16,19 @@ const META: TechniqueMeta = TechniqueMeta {
     id: TechniqueId("T1110.003"),
     tactic: Tactic::CredentialAccess,
     name: "Password Spraying",
-    summary: "Try one password across many accounts (at most one attempt each, to stay under lockout). v0 confirms the auth surface is reachable and enforces one-attempt-per-account; a protocol backend (SMB/SSH/RDP) is pluggable.",
+    summary: "Try one password across many accounts (at most one attempt each, to stay under lockout). Runs a real SSH protocol probe on recognized SSH ports, else a reachability check; a credential-asserting backend (valid/invalid) plugs into the same Verifier seam.",
     side_effect: SideEffect::Observable,
     inputs: &[
         "target",
-        "port (default 445)",
+        "port (default 445; 22/2022/2222 use the SSH probe)",
         "users (comma-separated)",
         "password",
     ],
 };
 
 const DEFAULT_PORT: u16 = 445;
-const CONNECT_TIMEOUT: Duration = Duration::from_millis(400);
+/// Ports on which we run the real SSH protocol probe rather than a bare connect.
+const SSH_PORTS: &[u16] = &[22, 2022, 2222];
 
 impl Technique for PasswordSpray {
     fn meta(&self) -> &'static TechniqueMeta {
@@ -46,19 +46,27 @@ impl Technique for PasswordSpray {
         };
 
         let port = req.ports.first().copied().unwrap_or(DEFAULT_PORT);
-        let addr = SocketAddr::new(IpAddr::V4(req.target), port);
+        let verifier: &dyn Verifier = if SSH_PORTS.contains(&port) {
+            &SshProbe
+        } else {
+            &Reachability
+        };
+
         // One attempt per unique account: a repeated name never gets hit twice.
         for user in unique(&creds.usernames) {
-            let reachable = TcpStream::connect_timeout(&addr, CONNECT_TIMEOUT).is_ok();
-            let verdict = if reachable {
-                "unverified"
-            } else {
-                "service_unreachable"
-            };
+            let verdict = verifier.verify(req.target, port, user, &creds.password);
+            let banner = verdict
+                .banner()
+                .map(|b| format!(" banner={b:?}"))
+                .unwrap_or_default();
             ev.observe(
                 "auth_attempt",
                 target.as_str(),
-                format!("user={user} port={port} password=<redacted> verdict={verdict}"),
+                format!(
+                    "user={user} port={port} password=<redacted> verdict={}{}",
+                    verdict.kind(),
+                    banner
+                ),
             );
         }
         ev

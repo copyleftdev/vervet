@@ -5,6 +5,7 @@ members = [
     "crates/vervet-scope",
     "crates/vervet-technique",
     "crates/vervet-techniques",
+    "crates/vervet-verify",
     "crates/vervet-engage",
     "crates/vervet-report",
     "crates/vervet-cli",
@@ -31,6 +32,7 @@ vervet-core = { path = "crates/vervet-core" }
 vervet-scope = { path = "crates/vervet-scope" }
 vervet-technique = { path = "crates/vervet-technique" }
 vervet-techniques = { path = "crates/vervet-techniques" }
+vervet-verify = { path = "crates/vervet-verify" }
 vervet-engage = { path = "crates/vervet-engage" }
 vervet-report = { path = "crates/vervet-report" }
 

@@ -13,6 +13,7 @@ inventory.workspace = true
 vervet-core.workspace = true
 vervet-scope.workspace = true
 vervet-technique.workspace = true
+vervet-verify.workspace = true
 
 [dev-dependencies]
 ed25519-dalek = { workspace = true, features = ["rand_core"] }

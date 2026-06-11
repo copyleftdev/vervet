@@ -10,7 +10,7 @@ pub mod grant;
 pub mod manifest;
 
 pub use audit::AuditEntry;
-pub use credentials::Credentials;
+pub use credentials::{Credential, Credentials};
 pub use gate::{Denied, Gate};
 pub use grant::{Grant, Request};
 pub use manifest::{Claims, Manifest};

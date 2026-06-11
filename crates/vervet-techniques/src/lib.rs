@@ -7,4 +7,5 @@
 
 mod t1021_remote_services;
 mod t1046_service_discovery;
+mod t1078_valid_accounts;
 mod t1110_003_password_spray;

@@ -47,6 +47,7 @@ fn one_attempt_per_unique_account_and_redacts_password() {
     let creds = Credentials {
         usernames: vec!["alice".into(), "bob".into(), "alice".into()],
         password: "Spring2025!".into(),
+        pairs: vec![],
     };
     let request = Request::new(Ipv4Addr::LOCALHOST, vec![port]).with_credentials(creds);
     let grant = gate.authorize(&manifest, T1110, request, 1).unwrap();

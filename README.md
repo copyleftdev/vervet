@@ -12,6 +12,8 @@
   <a href="#the-loop"><img alt="evidence schema vq1" src="https://img.shields.io/badge/evidence-vq1-8fbfb4?style=flat-square&labelColor=172023"></a>
 </p>
 
+<p align="center"><a href="https://tokentip.to/@copyleftdev"><img alt="Tip my tokens" src="https://tokentip.to/badge/copyleftdev.svg?logo=1"></a></p>
+
 ---
 
 **vervet** is a single-binary adversary-emulation instrument for red teams,
